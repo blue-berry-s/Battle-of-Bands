@@ -60,6 +60,15 @@ public class PlayerController : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
+
+		//Debug.Log(m_Rigidbody2D.linearVelocity);
+	}
+
+	//prevent sliding when attacking
+	public void stopSlide()
+	{
+		m_Rigidbody2D.linearVelocityX = 0;
+		
 	}
 
 
@@ -99,28 +108,26 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 
-			// Determine the movement speed modifier based on whether the player is grounded
-			float speedModifier = jump ? 0.2f : 1.0f;
-
+			
 			// Move the character by finding the target velocity
-			Vector3 targetVelocity = new Vector2(move * 10f * speedModifier, m_Rigidbody2D.linearVelocity.y);
+			Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.linearVelocity.y);
 			// And then smoothing it out and applying it to the character
 			m_Rigidbody2D.linearVelocity = Vector3.SmoothDamp(m_Rigidbody2D.linearVelocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
 			
 
 			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
-			{
+			//if (move > 0 && !m_FacingRight)
+			//{
 				// ... flip the player.
-				Flip();
-			}
+			//	Flip();
+			//}
 			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
-			{
+			//else if (move < 0 && m_FacingRight)
+			//{
 				// ... flip the player.
-				Flip();
-			}
+			//	Flip();
+			//}
 		}
 		// If the player should jump...
 		if (m_Grounded && jump)
@@ -132,8 +139,8 @@ public class PlayerController : MonoBehaviour
 			}
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 		}
-		Debug.Log("m_grounded: " + m_Grounded);
-		Debug.Log(m_Rigidbody2D.linearVelocity);
+		//Debug.Log("m_grounded: " + m_Grounded);
+		//Debug.Log(m_Rigidbody2D.linearVelocity);
 	}
 
 
@@ -146,5 +153,9 @@ public class PlayerController : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+	}
+
+	public bool isGrounded() {
+		return m_Grounded;
 	}
 }
