@@ -6,6 +6,7 @@ using UnityEngine.Events;
 //@author: Brackeys
 public class PlayerController : MonoBehaviour
 {
+	[SerializeField] private Transform playerTransform;
 	[SerializeField] private float m_JumpForce = 600f;                          // Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing =  0f;  // How much to smooth out the movement
@@ -14,12 +15,20 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 	[SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
+	[SerializeField] private Collider2D frontCollider;
+	[SerializeField] private Collider2D collider2D;
+
 
 	const float k_GroundedRadius = .17f; // Radius of the overlap circle to determine if grounded
 	private bool m_Grounded;            // Whether or not the player is grounded.
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
+
+	private bool canGoForward = true;
+	private bool canGoBackward = true;
+	private float maxX = 0;
+	private float minX = 0;
 
 	[Header("Events")]
 	[Space]
@@ -60,6 +69,19 @@ public class PlayerController : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
+
+		Debug.Log(m_Rigidbody2D.linearVelocityX);
+
+		if (!canGoForward && m_Rigidbody2D.linearVelocityX > 0 && playerTransform.position.x > maxX)
+		{
+			playerTransform.position = new Vector3 (maxX, playerTransform.position.y, playerTransform.position.z);
+			m_Rigidbody2D.linearVelocityX = 0;
+		}
+		else if (!canGoBackward && m_Rigidbody2D.linearVelocityX < 0 && playerTransform.position.x < maxX) {
+			playerTransform.position = new Vector3(minX, playerTransform.position.y, playerTransform.position.z);
+			m_Rigidbody2D.linearVelocityX = -m_Rigidbody2D.linearVelocityX;
+		}
+
 
 		//Debug.Log(m_Rigidbody2D.linearVelocity);
 	}
@@ -157,5 +179,23 @@ public class PlayerController : MonoBehaviour
 
 	public bool isGrounded() {
 		return m_Grounded;
+	}
+
+	public void forwardBlocked(float pos) {
+		canGoForward = false;
+		maxX = pos;
+	}
+
+	public void backwardBlocked(float pos) {
+		canGoBackward = false;
+		minX = pos;
+	}
+
+	public void forwardOpen() {
+		canGoForward = true;
+	}
+
+	public void backwardOpen() {
+		canGoBackward = true;
 	}
 }
