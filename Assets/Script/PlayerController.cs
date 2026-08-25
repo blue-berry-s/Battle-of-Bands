@@ -26,6 +26,7 @@ public class PlayerController : MonoBehaviour
 	private bool canGoBackward = true;
 	private float maxX = 0;
 	private float minX = 0;
+	
 
 	[Header("Events")]
 	[Space]

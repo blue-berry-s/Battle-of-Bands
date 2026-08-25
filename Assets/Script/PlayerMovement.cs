@@ -9,6 +9,7 @@ public class PlayerMovement : MonoBehaviour
     public PlayerController controller;
     public float runSpeed = 20f;
     public Animator animator;
+    public bool isFrozen = false;
 
 
     float horizontalMove = 0f;
@@ -25,7 +26,8 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //Debug.Log(animator.GetBool("isAttacking"));
-        if (!animator.GetBool("isAttacking")) {
+        if (!animator.GetBool("isAttacking") && !animator.GetBool("isBlocking") && !animator.GetBool("isKicking")) {
+            unfreezePlayer();
             horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
             animator.SetFloat("moveSpeed", Mathf.Abs(horizontalMove));
 
@@ -37,7 +39,9 @@ public class PlayerMovement : MonoBehaviour
         }
         else
         {
-            controller.stopSlide();
+            if (!isFrozen) {
+                freezePlayer();
+            }
         }
 
     }
@@ -52,6 +56,18 @@ public class PlayerMovement : MonoBehaviour
 
     public void onLanding() {
         animator.SetBool("isJumping", false);
+    }
+
+    private void freezePlayer() {
+        isFrozen = true;
+        controller.forwardBlocked(gameObject.GetComponent<Transform>().position.x);
+        controller.backwardBlocked(gameObject.GetComponent<Transform>().position.x);
+    }
+
+    private void unfreezePlayer() {
+        controller.forwardOpen();
+        controller.backwardOpen();
+        isFrozen = false;
     }
 
 

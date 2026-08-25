@@ -292,6 +292,7 @@ GameObject:
   - component: {fileID: 453432740}
   - component: {fileID: 453432739}
   - component: {fileID: 453432741}
+  - component: {fileID: 453432742}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -482,6 +483,7 @@ MonoBehaviour:
   controller: {fileID: 453432736}
   runSpeed: 30
   animator: {fileID: 453432733}
+  isFrozen: 0
 --- !u!58 &453432739
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -581,6 +583,19 @@ MonoBehaviour:
   attackHitBox:
   - {fileID: 1746471244}
   - {fileID: 561028475}
+--- !u!114 &453432742
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 453432732}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 74ba6b8e796d23049ae3aa58d075c2de, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  animator: {fileID: 453432733}
 --- !u!1 &519420028
 GameObject:
   m_ObjectHideFlags: 0

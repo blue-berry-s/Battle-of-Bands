@@ -1,25 +1,23 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IHealth
+public class playerHealth : MonoBehaviour, IHealth
 {
-    public float maxHealth { get; set; } = 10;
-    public float currentHealth { get; set; }
 
+    public Animator animator;
     public bool canBeDamaged { get; set; } = true;
-
-    public Animator enemyAnimator;
-    public Rigidbody2D enemyRigidBody;
+    public float maxHealth { get; set; } = 10;
+    public float currentHealth { get; set ; }
 
     public void Damage(float damageAmount)
     {
-
-        if (canBeDamaged && !enemyAnimator.GetBool("isBlocking")) {
+        if (canBeDamaged && !animator.GetBool("isBlocking"))
+        {
             canBeDamaged = false;
             if (currentHealth - damageAmount > 0)
-            {
-                enemyRigidBody.AddForce(new Vector2(50, 100));
+            { 
+                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(50, 100));
                 currentHealth -= damageAmount;
-                enemyAnimator.SetBool("isHurt", true);
+                animator.SetBool("isHurt", true);
             }
             else
             {
@@ -27,28 +25,29 @@ public class Enemy : MonoBehaviour, IHealth
                 Die();
             }
         }
-        //Debug.Log(currentHealth);
     }
 
     public void Die()
     {
-        Debug.Log("I DIED!");
+        Debug.Log("PLAYER DIED");
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = maxHealth;
+        maxHealth = currentHealth;
     }
 
     // Update is called once per frame
     void Update()
     {
+        
     }
 
-    public void recover() {
-        enemyAnimator.SetBool("isHurt", false);
+    public void recover()
+    {
+        animator.SetBool("isHurt", false);
         canBeDamaged = true;
-        
+
     }
 }
