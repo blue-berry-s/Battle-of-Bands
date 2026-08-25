@@ -15,9 +15,6 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 	[SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
 
-	[SerializeField] private Collider2D frontCollider;
-	[SerializeField] private Collider2D collider2D;
-
 
 	const float k_GroundedRadius = .17f; // Radius of the overlap circle to determine if grounded
 	private bool m_Grounded;            // Whether or not the player is grounded.
@@ -70,7 +67,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 
-		Debug.Log(m_Rigidbody2D.linearVelocityX);
+		//Debug.Log(m_Rigidbody2D.linearVelocityX);
 
 		if (!canGoForward && m_Rigidbody2D.linearVelocityX > 0 && playerTransform.position.x > maxX)
 		{
