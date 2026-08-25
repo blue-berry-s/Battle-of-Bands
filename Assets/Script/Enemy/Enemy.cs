@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Enemy : MonoBehaviour, IHealth
+public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 {
     public float maxHealth { get; set; } = 10;
     public float currentHealth { get; set; }
@@ -9,6 +9,55 @@ public class Enemy : MonoBehaviour, IHealth
 
     public Animator enemyAnimator;
     public Rigidbody2D enemyRigidBody;
+
+    public EnemyStateMachine StateMachine { get; set; }
+    public EnemyIdle idleState { get; set; }
+    public EnemyMove moveState { get; set; }
+    public EnemyAttack attackState { get; set; }
+    public bool isWithinAttackingDistance { get; set; }
+    public bool isWithinKickingDistance { get; set; }
+
+    public GameObject[] attackHitBox;
+
+    //this should be customaizble as a scriptable object
+    public float moveSpeed = 1f;
+    //attack size - this should also be scriptable object
+    //maybe? I need to account for jumping
+    public float attackSize = 2f;
+
+    private void Awake()
+    {
+        StateMachine = new EnemyStateMachine();
+        idleState = new EnemyIdle(this, StateMachine);
+        moveState = new EnemyMove(this, StateMachine);
+        attackState = new EnemyAttack(this, StateMachine);
+    }
+
+    // Start is called once before the first execution of Update after the MonoBehaviour is created
+    void Start()
+    {
+        currentHealth = maxHealth;
+        StateMachine.Initalize(idleState);
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+        StateMachine.currentEnemyState.FrameUpdate();
+    }
+
+    private void FixedUpdate()
+    {
+        StateMachine.currentEnemyState.PhysicsUpdate();
+    }
+
+    private void AnimationTriggerEvent(AnimationTriggerType triggerType) {
+        StateMachine.currentEnemyState.AnimationTriggerEvent(triggerType);
+    }
+
+    public enum AnimationTriggerType { 
+        
+    }
 
     public void Damage(float damageAmount)
     {
@@ -35,20 +84,36 @@ public class Enemy : MonoBehaviour, IHealth
         Debug.Log("I DIED!");
     }
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
-    {
-        currentHealth = maxHealth;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-    }
 
     public void recover() {
         enemyAnimator.SetBool("isHurt", false);
         canBeDamaged = true;
         
     }
+
+    public void moveEnemy(Vector2 direction) {
+        enemyAnimator.SetBool("isMoving", true);
+        enemyRigidBody.linearVelocity = direction*moveSpeed;
+    }
+
+    public void setAttackingDistanceBool(bool canAttack)
+    {
+        isWithinAttackingDistance = canAttack;
+    }
+
+    public void setKickingDistanceBool(bool canKick)
+    {
+        isWithinKickingDistance = canKick;
+    }
+
+    public void isAttacking() {
+        attackHitBox[0].SetActive(true);
+    }
+
+    public void stopAttacking()
+    {
+        attackHitBox[0].SetActive(false);
+        enemyAnimator.SetBool("isAttacking", false);
+    }
+
 }

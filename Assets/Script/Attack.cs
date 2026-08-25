@@ -20,8 +20,12 @@ public class Attack : MonoBehaviour, IAttack
     private void OnTriggerEnter2D(Collider2D collision)
     {
         //Debug.Log(collision.gameObject.name);
-        if (collision.gameObject.tag == "Enemy") {
+        if (collision.gameObject.tag == "Enemy")
+        {
             collision.gameObject.GetComponent<Enemy>().Damage(damageAmount);
+        }
+        else if (collision.gameObject.tag == "Player") {
+            collision.gameObject.GetComponent<playerHealth>().Damage(damageAmount);
         }
     }
 

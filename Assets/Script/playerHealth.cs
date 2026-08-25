@@ -15,7 +15,7 @@ public class playerHealth : MonoBehaviour, IHealth
             canBeDamaged = false;
             if (currentHealth - damageAmount > 0)
             { 
-                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(50, 100));
+                gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-100, 100));
                 currentHealth -= damageAmount;
                 animator.SetBool("isHurt", true);
             }
@@ -35,7 +35,7 @@ public class playerHealth : MonoBehaviour, IHealth
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        maxHealth = currentHealth;
+        currentHealth = maxHealth;
     }
 
     // Update is called once per frame
@@ -44,10 +44,15 @@ public class playerHealth : MonoBehaviour, IHealth
         
     }
 
+    public void isHurt() {
+        gameObject.GetComponent<PlayerController>().airBlocked();
+    }
+
     public void recover()
     {
         animator.SetBool("isHurt", false);
         canBeDamaged = true;
+        gameObject.GetComponent<PlayerController>().airOpen();
 
     }
 }

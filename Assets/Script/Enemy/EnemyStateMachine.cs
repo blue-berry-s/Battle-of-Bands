@@ -1,0 +1,18 @@
+using UnityEngine;
+
+public class EnemyStateMachine
+{
+    public EnemyState currentEnemyState { get; set; }
+
+    public void Initalize(EnemyState startingState) {
+        currentEnemyState = startingState;
+        currentEnemyState.EnterState();
+    }
+
+    public void ChangeState(EnemyState newState) {
+        currentEnemyState.ExitState();
+        currentEnemyState = newState;
+        currentEnemyState.EnterState();
+        
+    }
+}

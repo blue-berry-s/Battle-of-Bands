@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 	private bool canGoBackward = true;
 	private float maxX = 0;
 	private float minX = 0;
+
+	private bool canAir = true;
 	
 
 	[Header("Events")]
@@ -69,6 +71,7 @@ public class PlayerController : MonoBehaviour
 		}
 
 		//Debug.Log(m_Rigidbody2D.linearVelocityX);
+		//Debug.Log(canGoForward);
 
 		if (!canGoForward && m_Rigidbody2D.linearVelocityX > 0 && playerTransform.position.x > maxX)
 		{
@@ -80,6 +83,9 @@ public class PlayerController : MonoBehaviour
 			m_Rigidbody2D.linearVelocityX = -m_Rigidbody2D.linearVelocityX;
 		}
 
+		if (!canAir) {
+			m_Rigidbody2D.linearVelocityY = 0;
+		}
 
 		//Debug.Log(m_Rigidbody2D.linearVelocity);
 	}
@@ -182,18 +188,30 @@ public class PlayerController : MonoBehaviour
 	public void forwardBlocked(float pos) {
 		canGoForward = false;
 		maxX = pos;
+		//Debug.Log("FORWAD BLOCKED: " + maxX);
 	}
 
 	public void backwardBlocked(float pos) {
 		canGoBackward = false;
 		minX = pos;
+		//Debug.Log("BB");
 	}
 
 	public void forwardOpen() {
 		canGoForward = true;
+		//Debug.Log("FORWARD OPEN");
 	}
 
 	public void backwardOpen() {
 		canGoBackward = true;
+		//Debug.Log("BO");
+	}
+
+	public void airBlocked() {
+		canAir = false;
+	}
+
+	public void airOpen() {
+		canAir = true;
 	}
 }

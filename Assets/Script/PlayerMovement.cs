@@ -26,8 +26,12 @@ public class PlayerMovement : MonoBehaviour
     void Update()
     {
         //Debug.Log(animator.GetBool("isAttacking"));
-        if (!animator.GetBool("isAttacking") && !animator.GetBool("isBlocking") && !animator.GetBool("isKicking")) {
-            unfreezePlayer();
+        if (!animator.GetBool("isAttacking") && !animator.GetBool("isBlocking") && !animator.GetBool("isKicking") && !animator.GetBool("isHurt"))
+        {
+            if (isFrozen)
+            {
+                unfreezePlayer();
+            }
             horizontalMove = Input.GetAxisRaw("Horizontal") * runSpeed;
             animator.SetFloat("moveSpeed", Mathf.Abs(horizontalMove));
 
@@ -37,9 +41,18 @@ public class PlayerMovement : MonoBehaviour
                 animator.SetBool("isJumping", true);
             }
         }
+        else if (animator.GetBool("isHurt")) {
+            Debug.Log("HERE");
+            gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-1.5f, 1));
+            if (jump) {
+                Debug.Log("B");
+                transform.GetComponent<Rigidbody2D>().linearVelocityY = -10;
+            }
+        }
         else
         {
-            if (!isFrozen) {
+            if (!isFrozen)
+            {
                 freezePlayer();
             }
         }
