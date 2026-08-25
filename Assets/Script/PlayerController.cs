@@ -6,6 +6,7 @@ using UnityEngine.Events;
 //@author: Brackeys
 public class PlayerController : MonoBehaviour
 {
+	[SerializeField] private Transform playerTransform;
 	[SerializeField] private float m_JumpForce = 600f;                          // Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing =  0f;  // How much to smooth out the movement
@@ -20,6 +21,11 @@ public class PlayerController : MonoBehaviour
 	private Rigidbody2D m_Rigidbody2D;
 	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
+
+	private bool canGoForward = true;
+	private bool canGoBackward = true;
+	private float maxX = 0;
+	private float minX = 0;
 
 	[Header("Events")]
 	[Space]
@@ -60,6 +66,28 @@ public class PlayerController : MonoBehaviour
 					OnLandEvent.Invoke();
 			}
 		}
+
+		//Debug.Log(m_Rigidbody2D.linearVelocityX);
+
+		if (!canGoForward && m_Rigidbody2D.linearVelocityX > 0 && playerTransform.position.x > maxX)
+		{
+			playerTransform.position = new Vector3 (maxX, playerTransform.position.y, playerTransform.position.z);
+			m_Rigidbody2D.linearVelocityX = 0;
+		}
+		else if (!canGoBackward && m_Rigidbody2D.linearVelocityX < 0 && playerTransform.position.x < maxX) {
+			playerTransform.position = new Vector3(minX, playerTransform.position.y, playerTransform.position.z);
+			m_Rigidbody2D.linearVelocityX = -m_Rigidbody2D.linearVelocityX;
+		}
+
+
+		//Debug.Log(m_Rigidbody2D.linearVelocity);
+	}
+
+	//prevent sliding when attacking
+	public void stopSlide()
+	{
+		m_Rigidbody2D.linearVelocityX = 0;
+		
 	}
 
 
@@ -99,28 +127,26 @@ public class PlayerController : MonoBehaviour
 				}
 			}
 
-			// Determine the movement speed modifier based on whether the player is grounded
-			float speedModifier = jump ? 0.2f : 1.0f;
-
+			
 			// Move the character by finding the target velocity
-			Vector3 targetVelocity = new Vector2(move * 10f * speedModifier, m_Rigidbody2D.linearVelocity.y);
+			Vector3 targetVelocity = new Vector2(move * 10f, m_Rigidbody2D.linearVelocity.y);
 			// And then smoothing it out and applying it to the character
 			m_Rigidbody2D.linearVelocity = Vector3.SmoothDamp(m_Rigidbody2D.linearVelocity, targetVelocity, ref m_Velocity, m_MovementSmoothing);
 
 			
 
 			// If the input is moving the player right and the player is facing left...
-			if (move > 0 && !m_FacingRight)
-			{
+			//if (move > 0 && !m_FacingRight)
+			//{
 				// ... flip the player.
-				Flip();
-			}
+			//	Flip();
+			//}
 			// Otherwise if the input is moving the player left and the player is facing right...
-			else if (move < 0 && m_FacingRight)
-			{
+			//else if (move < 0 && m_FacingRight)
+			//{
 				// ... flip the player.
-				Flip();
-			}
+			//	Flip();
+			//}
 		}
 		// If the player should jump...
 		if (m_Grounded && jump)
@@ -132,8 +158,8 @@ public class PlayerController : MonoBehaviour
 			}
 			m_Rigidbody2D.AddForce(new Vector2(0f, m_JumpForce));
 		}
-		Debug.Log("m_grounded: " + m_Grounded);
-		Debug.Log(m_Rigidbody2D.linearVelocity);
+		//Debug.Log("m_grounded: " + m_Grounded);
+		//Debug.Log(m_Rigidbody2D.linearVelocity);
 	}
 
 
@@ -146,5 +172,27 @@ public class PlayerController : MonoBehaviour
 		Vector3 theScale = transform.localScale;
 		theScale.x *= -1;
 		transform.localScale = theScale;
+	}
+
+	public bool isGrounded() {
+		return m_Grounded;
+	}
+
+	public void forwardBlocked(float pos) {
+		canGoForward = false;
+		maxX = pos;
+	}
+
+	public void backwardBlocked(float pos) {
+		canGoBackward = false;
+		minX = pos;
+	}
+
+	public void forwardOpen() {
+		canGoForward = true;
+	}
+
+	public void backwardOpen() {
+		canGoBackward = true;
 	}
 }
