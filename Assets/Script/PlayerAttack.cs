@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerAttack : MonoBehaviour
 {
     private bool canAttack = true;
+    private bool isblocking = false;
     public Animator animator;
     public PlayerController controller;
     public GameObject[] attackHitBox;
@@ -24,10 +25,25 @@ public class PlayerAttack : MonoBehaviour
             animator.SetBool("isJumping", false);
             animator.SetBool("isAttacking", true);
         }
-        else if (Input.GetButtonDown("Kick") && canAttack) {
+        else if (Input.GetButtonDown("Kick") && canAttack)
+        {
             canAttack = false;
             animator.SetBool("isJumping", false);
             animator.SetBool("isKicking", true);
+        }
+        else if (Input.GetButtonDown("Block")) {
+            if (!isblocking) {
+                isblocking = true;
+                canAttack = false;
+                animator.SetBool("isBlocking", true);
+            }
+        }
+
+        if (Input.GetButtonUp("Block")) {
+            isblocking = false;
+            canAttack = true;
+            animator.SetBool("isBlocking", false);
+
         }
     }
 
@@ -59,5 +75,9 @@ public class PlayerAttack : MonoBehaviour
         }
 
         canAttack = true;
+    }
+
+    public void blocking() { 
+        
     }
 }
