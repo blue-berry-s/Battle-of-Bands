@@ -417,7 +417,6 @@ MonoBehaviour:
   m_JumpForce: 600
   m_CrouchSpeed: 0.36
   m_MovementSmoothing: 0.05
-  m_AirControl: 0
   m_WhatIsGround:
     serializedVersion: 2
     m_Bits: 512
@@ -2056,8 +2055,7 @@ MonoBehaviour:
   enemyRigidBody: {fileID: 1955650995}
   attackHitBox:
   - {fileID: 1241365091}
-  moveSpeed: 1
-  attackSize: 5
+  data: {fileID: 11400000, guid: b5a9f25f819efff4cb2b5d590915edb5, type: 2}
 --- !u!95 &1955651000
 Animator:
   serializedVersion: 7

@@ -1,8 +1,8 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyAttack : EnemyState
 {
-
     public EnemyAttack(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
     }
@@ -32,7 +32,7 @@ public class EnemyAttack : EnemyState
         }
         else
         {
-            enemy.enemyAnimator.SetBool("isAttacking", true);
+            enemy.attackPlayer();
         }
     }
 
@@ -40,4 +40,6 @@ public class EnemyAttack : EnemyState
     {
         base.PhysicsUpdate();
     }
+
+    
 }

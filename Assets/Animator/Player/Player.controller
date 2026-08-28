@@ -735,7 +735,7 @@ AnimatorStateMachine:
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: 7460597475745773722}
-    m_Position: {x: 160, y: -130, z: 0}
+    m_Position: {x: 30, y: -160, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 8645481184294606640}
     m_Position: {x: 530, y: -130, z: 0}
@@ -764,7 +764,7 @@ AnimatorStateMachine:
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
   m_StateMachineBehaviours: []
-  m_AnyStatePosition: {x: 830, y: -130, z: 0}
+  m_AnyStatePosition: {x: 560, y: -480, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 1050, y: 260, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
@@ -779,6 +779,9 @@ AnimatorStateTransition:
   m_Conditions:
   - m_ConditionMode: 1
     m_ConditionEvent: isAttacking
+    m_EventTreshold: 0
+  - m_ConditionMode: 2
+    m_ConditionEvent: isHurt
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: -1459306623113321043}

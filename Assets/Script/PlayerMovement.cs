@@ -42,7 +42,6 @@ public class PlayerMovement : MonoBehaviour
             }
         }
         else if (animator.GetBool("isHurt")) {
-            
             if (jump) {
                 //Debug.Log("B");
                 transform.GetComponent<Rigidbody2D>().linearVelocityY = -10;

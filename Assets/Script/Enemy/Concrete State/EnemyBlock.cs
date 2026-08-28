@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class EnemyIdle : EnemyState
+public class EnemyBlock : EnemyState
 {
-    
-    public EnemyIdle(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
+    private Animator player;
+    public EnemyBlock(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Animator>();
     }
 
     public override void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
@@ -15,25 +16,23 @@ public class EnemyIdle : EnemyState
     public override void EnterState()
     {
         base.EnterState();
+        enemy.enemyAnimator.SetBool("isBlocking", true);
     }
 
     public override void ExitState()
     {
         base.ExitState();
+        enemy.enemyAnimator.SetBool("isBlocking", false);
     }
 
     public override void FrameUpdate()
     {
         base.FrameUpdate();
-
-        if (enemy.isWithinAttackingDistance)
-        {
+        if (!player.GetBool("isAttacking") && !player.GetBool("isKicking")) {
             enemy.StateMachine.ChangeState(enemy.attackState);
         }
-        else
-        {
-            enemy.StateMachine.ChangeState(enemy.moveState);
-        }
+       
+        
     }
 
     public override void PhysicsUpdate()

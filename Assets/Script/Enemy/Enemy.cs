@@ -1,8 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 {
-    public float maxHealth { get; set; } = 10;
+
+    private Transform player;
+    public float maxHealth { get; set; }
     public float currentHealth { get; set; }
 
     public bool canBeDamaged { get; set; } = true;
@@ -14,16 +17,15 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public EnemyIdle idleState { get; set; }
     public EnemyMove moveState { get; set; }
     public EnemyAttack attackState { get; set; }
+
+    public EnemyBlock blockState { get; set; }
+
     public bool isWithinAttackingDistance { get; set; }
     public bool isWithinKickingDistance { get; set; }
 
     public GameObject[] attackHitBox;
 
-    //this should be customaizble as a scriptable object
-    public float moveSpeed = 1f;
-    //attack size - this should also be scriptable object
-    //maybe? I need to account for jumping
-    public float attackSize = 2f;
+    public Enemydata data;
 
     private void Awake()
     {
@@ -31,23 +33,40 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         idleState = new EnemyIdle(this, StateMachine);
         moveState = new EnemyMove(this, StateMachine);
         attackState = new EnemyAttack(this, StateMachine);
+        blockState = new EnemyBlock(this, StateMachine);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = maxHealth;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        currentHealth = data.maxHealth;
         StateMachine.Initalize(idleState);
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
+        {
+            Vector2 distance = player.position - transform.position;
+            //Debug.Log("X: " + distance.x + " Y: " + distance.y);
+            if (Mathf.Abs(distance.x) <= 7 && Mathf.Abs(distance.y) <= 1)
+            {
+                float rand = Random.Range(0f, 1f);
+                if (rand < data.blockingChance) {
+                    float randFloat = Random.Range(0, data.maxReactionDelay);
+                    StartCoroutine(delayBlock(randFloat));
+                }
+            }
+
+        }
         StateMachine.currentEnemyState.FrameUpdate();
     }
 
     private void FixedUpdate()
     {
+        
         StateMachine.currentEnemyState.PhysicsUpdate();
     }
 
@@ -94,7 +113,14 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public void moveEnemy(Vector2 direction) {
         if (!enemyAnimator.GetBool("isHurt")) {
             enemyAnimator.SetBool("isMoving", true);
-            enemyRigidBody.linearVelocityX = direction.x * moveSpeed;
+            enemyRigidBody.linearVelocityX = direction.x * data.movementSpeed;
+        }
+    }
+
+    public void attackPlayer() {
+        if (!enemyAnimator.GetBool("isAttacking")) {
+            float randFloat = Random.Range(data.minReactionDelay, data.maxReactionDelay);
+            StartCoroutine(delayAttack(randFloat));
         }
     }
 
@@ -116,6 +142,17 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     {
         attackHitBox[0].SetActive(false);
         enemyAnimator.SetBool("isAttacking", false);
+    }
+
+    IEnumerator delayAttack(float time)
+    {
+        yield return new WaitForSeconds(time);
+        enemyAnimator.SetBool("isAttacking", true);
+    }
+
+    IEnumerator delayBlock(float time) {
+        yield return new WaitForSeconds(time);
+        StateMachine.ChangeState(blockState);
     }
 
 }

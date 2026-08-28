@@ -7,7 +7,7 @@ using UnityEngine.Events;
 public class PlayerController : MonoBehaviour
 {
 	[SerializeField] private Transform playerTransform;
-	[SerializeField] private float m_JumpForce = 600f;                          // Amount of force added when the player jumps.
+	[SerializeField] private float m_JumpForce = 800f;                          // Amount of force added when the player jumps.
 	[Range(0, 1)] [SerializeField] private float m_CrouchSpeed = .36f;          // Amount of maxSpeed applied to crouching movement. 1 = 100%
 	[Range(0, .3f)] [SerializeField] private float m_MovementSmoothing =  0f;  // How much to smooth out the movement
 	[SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
@@ -20,7 +20,6 @@ public class PlayerController : MonoBehaviour
 	const float k_GroundedRadius = .17f; // Radius of the overlap circle to determine if grounded
 	private bool m_Grounded;            // Whether or not the player is grounded.
 	private Rigidbody2D m_Rigidbody2D;
-	private bool m_FacingRight = true;  // For determining which way the player is currently facing.
 	private Vector3 m_Velocity = Vector3.zero;
 
 	private bool canGoForward = true;
