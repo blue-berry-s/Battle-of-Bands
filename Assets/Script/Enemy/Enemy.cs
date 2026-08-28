@@ -66,7 +66,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
             canBeDamaged = false;
             if (currentHealth - damageAmount > 0)
             {
-                enemyRigidBody.AddForce(new Vector2(50, 100));
+                enemyRigidBody.AddForce(new Vector2(400, 200));
                 currentHealth -= damageAmount;
                 enemyAnimator.SetBool("isHurt", true);
             }
@@ -92,8 +92,10 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     }
 
     public void moveEnemy(Vector2 direction) {
-        enemyAnimator.SetBool("isMoving", true);
-        enemyRigidBody.linearVelocity = direction*moveSpeed;
+        if (!enemyAnimator.GetBool("isHurt")) {
+            enemyAnimator.SetBool("isMoving", true);
+            enemyRigidBody.linearVelocityX = direction.x * moveSpeed;
+        }
     }
 
     public void setAttackingDistanceBool(bool canAttack)
