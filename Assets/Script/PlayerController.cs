@@ -13,6 +13,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField] private LayerMask m_WhatIsGround;                          // A mask determining what is ground to the character
 	[SerializeField] private Transform m_GroundCheck;                           // A position marking where to check if the player is grounded.
 	[SerializeField] private Collider2D m_CrouchDisableCollider;                // A collider that will be disabled when crouching
+	private float fallMultiplier = 3f;
+
 
 	private Animator animator;
 
@@ -73,6 +75,10 @@ public class PlayerController : MonoBehaviour
 				if (!wasGrounded)
 					OnLandEvent.Invoke();
 			}
+		}
+
+		if (m_Rigidbody2D.linearVelocityY < 1) {
+			m_Rigidbody2D.linearVelocityY += Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
 		}
 
 		//Debug.Log(m_Rigidbody2D.linearVelocityX);
