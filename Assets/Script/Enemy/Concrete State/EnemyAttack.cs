@@ -1,8 +1,8 @@
 using UnityEngine;
+using System.Collections;
 
 public class EnemyAttack : EnemyState
 {
-
     public EnemyAttack(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
     }
@@ -15,7 +15,7 @@ public class EnemyAttack : EnemyState
     public override void EnterState()
     {
         base.EnterState();
-        enemy.enemyAnimator.SetBool("isAttacking", true);
+        enemy.attackPlayer();
         //Debug.Log("I'M ATTACKING NOW");
     }
 
@@ -28,11 +28,17 @@ public class EnemyAttack : EnemyState
     {
         base.FrameUpdate();
         if (!enemy.isWithinAttackingDistance) {
-            enemy.StateMachine.ChangeState(enemy.idleState);
+            if (enemy.enemyAnimator.GetBool("isJumping"))
+            {
+                enemy.StateMachine.ChangeState(enemy.jumpState);
+            }
+            else {
+                enemy.StateMachine.ChangeState(enemy.idleState);
+            }
         }
         else
         {
-            enemy.enemyAnimator.SetBool("isAttacking", true);
+            enemy.attackPlayer();
         }
     }
 
@@ -40,4 +46,7 @@ public class EnemyAttack : EnemyState
     {
         base.PhysicsUpdate();
     }
+    
+
+
 }

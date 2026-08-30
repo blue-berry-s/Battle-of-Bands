@@ -19,19 +19,20 @@ public class PlayerAttack : MonoBehaviour
     void Update()
     {
 
-        if (Input.GetButtonDown("Attack") && canAttack)
+
+        if (Input.GetButtonDown("Attack") && canAttack && !animator.GetBool("isHurt"))
         {
             canAttack = false;
             animator.SetBool("isJumping", false);
             animator.SetBool("isAttacking", true);
         }
-        else if (Input.GetButtonDown("Kick") && canAttack)
+        else if (Input.GetButtonDown("Kick") && canAttack && !animator.GetBool("isHurt"))
         {
             canAttack = false;
             animator.SetBool("isJumping", false);
             animator.SetBool("isKicking", true);
         }
-        else if (Input.GetButtonDown("Block")) {
+        else if (Input.GetButtonDown("Block") && !animator.GetBool("isHurt")) {
             if (!isblocking) {
                 isblocking = true;
                 canAttack = false;

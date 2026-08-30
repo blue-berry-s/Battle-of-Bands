@@ -1,8 +1,11 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 {
-    public float maxHealth { get; set; } = 10;
+
+    private Transform player;
+    public float maxHealth { get; set; }
     public float currentHealth { get; set; }
 
     public bool canBeDamaged { get; set; } = true;
@@ -10,20 +13,32 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public Animator enemyAnimator;
     public Rigidbody2D enemyRigidBody;
 
+    // State Machine
     public EnemyStateMachine StateMachine { get; set; }
     public EnemyIdle idleState { get; set; }
     public EnemyMove moveState { get; set; }
     public EnemyAttack attackState { get; set; }
+
+    public EnemyBlock blockState { get; set; }
+
+    public EnemyRetreat retreatState { get; set; }
+
+    public EnemyJump jumpState { get; set; }
+
     public bool isWithinAttackingDistance { get; set; }
     public bool isWithinKickingDistance { get; set; }
 
     public GameObject[] attackHitBox;
 
-    //this should be customaizble as a scriptable object
-    public float moveSpeed = 1f;
-    //attack size - this should also be scriptable object
-    //maybe? I need to account for jumping
-    public float attackSize = 2f;
+    public Enemydata data;
+
+    private bool m_Grounded;
+    [SerializeField] private Transform m_GroundCheck;
+    [SerializeField] private LayerMask m_WhatIsGround;
+    const float k_GroundedRadius = .17f; // Radius of the overlap circle to determine if grounded
+
+    public bool doneBlocking = false;
+    public bool doneNeutral = false;
 
     private void Awake()
     {
@@ -31,23 +46,61 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         idleState = new EnemyIdle(this, StateMachine);
         moveState = new EnemyMove(this, StateMachine);
         attackState = new EnemyAttack(this, StateMachine);
+        blockState = new EnemyBlock(this, StateMachine);
+        retreatState = new EnemyRetreat(this, StateMachine);
+        jumpState = new EnemyJump(this, StateMachine);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        currentHealth = maxHealth;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        currentHealth = data.maxHealth;
         StateMachine.Initalize(idleState);
     }
 
     // Update is called once per frame
     void Update()
     {
+
+        if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
+        {
+            Vector2 distance = player.position - transform.position;
+            //Debug.Log("X: " + distance.x + " Y: " + distance.y);
+            if (Mathf.Abs(distance.x) <= 7 && Mathf.Abs(distance.y) <= 1)
+            {
+                float rand = Random.Range(0f, 1f);
+                if (rand < data.blockingChance) {
+                    float randFloat = Random.Range(0, data.maxReactionDelay);
+                    StartCoroutine(delayBlock(randFloat));
+                }
+            }
+
+        }
+        else if (isWithinAttackingDistance)
+            {
+                StateMachine.ChangeState(attackState);
+            }
         StateMachine.currentEnemyState.FrameUpdate();
     }
 
     private void FixedUpdate()
     {
+        bool wasGrounded = m_Grounded;
+        m_Grounded = false;
+
+        // The player is grounded if a circlecast to the groundcheck position hits anything designated as ground
+        // This can be done using layers instead but Sample Assets will not overwrite your project settings.
+        Collider2D[] colliders = Physics2D.OverlapCircleAll(m_GroundCheck.position, k_GroundedRadius, m_WhatIsGround);
+        for (int i = 0; i < colliders.Length; i++)
+        {
+            if (colliders[i].gameObject != gameObject)
+            {
+                m_Grounded = true;
+                if (!wasGrounded)
+                    enemyAnimator.SetBool("isJumping", false);
+            }
+        }
         StateMachine.currentEnemyState.PhysicsUpdate();
     }
 
@@ -55,8 +108,8 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         StateMachine.currentEnemyState.AnimationTriggerEvent(triggerType);
     }
 
-    public enum AnimationTriggerType { 
-        
+    public enum AnimationTriggerType {
+
     }
 
     public void Damage(float damageAmount)
@@ -66,7 +119,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
             canBeDamaged = false;
             if (currentHealth - damageAmount > 0)
             {
-                enemyRigidBody.AddForce(new Vector2(50, 100));
+                enemyRigidBody.AddForce(new Vector2(400, 200));
                 currentHealth -= damageAmount;
                 enemyAnimator.SetBool("isHurt", true);
             }
@@ -88,12 +141,25 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public void recover() {
         enemyAnimator.SetBool("isHurt", false);
         canBeDamaged = true;
-        
+
     }
 
-    public void moveEnemy(Vector2 direction) {
-        enemyAnimator.SetBool("isMoving", true);
-        enemyRigidBody.linearVelocity = direction*moveSpeed;
+    public void moveEnemy(Vector2 direction)
+    {
+        if (!enemyAnimator.GetBool("isHurt"))
+        {
+            enemyAnimator.SetBool("isMoving", true);
+
+            // direction.x will now safely be 1 or -1, yielding a rock-solid, constant speed
+            enemyRigidBody.linearVelocityX = direction.x * data.movementSpeed;
+        }
+    }
+
+    public void attackPlayer() {
+        if (!enemyAnimator.GetBool("isAttacking")) {
+            float randFloat = Random.Range(data.minReactionDelay, data.maxReactionDelay);
+            StartCoroutine(delayAttack(randFloat));
+        }
     }
 
     public void setAttackingDistanceBool(bool canAttack)
@@ -115,5 +181,48 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         attackHitBox[0].SetActive(false);
         enemyAnimator.SetBool("isAttacking", false);
     }
+
+    IEnumerator delayAttack(float time)
+    {
+        yield return new WaitForSeconds(time);
+        enemyAnimator.SetBool("isAttacking", true);
+    }
+
+    IEnumerator delayBlock(float time) {
+        yield return new WaitForSeconds(time);
+        StateMachine.ChangeState(blockState);
+    }
+
+    public void performBlock() {
+        float randFloat = Random.Range(0, data.maxReactionDelay);
+        StartCoroutine(delayBlock(randFloat));
+    }
+
+    public void jumpForward() {
+        enemyRigidBody.AddForce(new Vector2(-3, 0f));
+
+    }
+
+    public void jumpUp() {
+        enemyAnimator.SetBool("isJumping", true);
+        enemyRigidBody.AddForce(new Vector2(0f, data.jumpForce));
+    }
+
+    public void jumpBack() {
+        enemyRigidBody.AddForce(new Vector2(3, 0f));
+        // Re-trigger idle to pick a safe posture position
+    }
+
+    public bool performBlockWait() {
+        StartCoroutine(blockWait());
+        return true;
+    }
+
+    public IEnumerator blockWait() {
+        float time = Random.Range(data.minReactionDelay, data.minReactionDelay);
+        yield return new WaitForSeconds(time);
+        doneBlocking = true;
+    }
+
 
 }
