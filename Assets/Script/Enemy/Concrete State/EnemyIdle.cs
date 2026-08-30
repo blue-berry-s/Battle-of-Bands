@@ -38,12 +38,6 @@ public class EnemyIdle : EnemyState
     {
         base.FrameUpdate();
 
-        if (enemy.isWithinAttackingDistance)
-        {
-            enemy.StateMachine.ChangeState(enemy.attackState);
-            return;
-        }
-
         if (!atPos)
         {
             // 1. Check if we arrived at the target position
@@ -60,10 +54,6 @@ public class EnemyIdle : EnemyState
                 // 3. Pass the true DIRECTION vector to the movement function
                 enemy.moveEnemy(new Vector2(directionX, 0));
             }
-        }
-        if (atPos) {
-            // Re-trigger idle to recalculate fresh dance parameters next frame
-            enemy.StateMachine.ChangeState(enemy.idleState);
         }
     }
 
@@ -88,13 +78,14 @@ public class EnemyIdle : EnemyState
             Debug.Log("Neutral Dance -> Move Back");
             // Command the movement immediately
             //TODO: instead of just moveEnemy - we should just create a new state (enemyRetreat)
-            enemy.moveEnemy(new Vector2(player.position.x + 2f, 0f));
+            enemy.StateMachine.ChangeState(enemy.retreatState);
         }
         // C: Escape backwards
         else
         {
             Debug.Log("Neutral Dance -> Jump Back");
             enemy.jumpBack();
+            enemy.StateMachine.ChangeState(enemy.jumpState);
 
         }
     }

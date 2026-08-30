@@ -1,13 +1,9 @@
 using UnityEngine;
 
-public class EnemyMove : EnemyState
+public class EnemyJump : EnemyState
 {
-
-
-    private Transform player;
-    public EnemyMove(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
+    public EnemyJump(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
     public override void AnimationTriggerEvent(Enemy.AnimationTriggerType triggerType)
@@ -28,17 +24,13 @@ public class EnemyMove : EnemyState
     public override void FrameUpdate()
     {
         base.FrameUpdate();
-
-        //calculate how far player is and move player towards enemy
-        Vector2 moveDirection = (player.position - enemy.transform.position).normalized;
-        enemy.moveEnemy(moveDirection);
-        
+        if (!enemy.enemyAnimator.GetBool("isJumping")) {
+            enemy.StateMachine.ChangeState(enemy.idleState);
+        }
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
     }
-
-
 }

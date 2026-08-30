@@ -13,12 +13,17 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public Animator enemyAnimator;
     public Rigidbody2D enemyRigidBody;
 
+    // State Machine
     public EnemyStateMachine StateMachine { get; set; }
     public EnemyIdle idleState { get; set; }
     public EnemyMove moveState { get; set; }
     public EnemyAttack attackState { get; set; }
 
     public EnemyBlock blockState { get; set; }
+
+    public EnemyRetreat retreatState { get; set; }
+
+    public EnemyJump jumpState { get; set; }
 
     public bool isWithinAttackingDistance { get; set; }
     public bool isWithinKickingDistance { get; set; }
@@ -42,6 +47,8 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         moveState = new EnemyMove(this, StateMachine);
         attackState = new EnemyAttack(this, StateMachine);
         blockState = new EnemyBlock(this, StateMachine);
+        retreatState = new EnemyRetreat(this, StateMachine);
+        jumpState = new EnemyJump(this, StateMachine);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -55,6 +62,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     // Update is called once per frame
     void Update()
     {
+
         if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
         {
             Vector2 distance = player.position - transform.position;
@@ -69,6 +77,10 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
             }
 
         }
+        else if (isWithinAttackingDistance)
+            {
+                StateMachine.ChangeState(attackState);
+            }
         StateMachine.currentEnemyState.FrameUpdate();
     }
 
