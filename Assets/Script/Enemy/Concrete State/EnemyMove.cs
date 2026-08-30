@@ -36,11 +36,13 @@ public class EnemyMove : EnemyState
         if (enemy.isWithinAttackingDistance) {
             enemy.StateMachine.ChangeState(enemy.attackState);
         }
+        
     }
 
     public override void PhysicsUpdate()
     {
         base.PhysicsUpdate();
     }
+
 
 }

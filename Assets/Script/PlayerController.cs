@@ -50,8 +50,6 @@ public class PlayerController : MonoBehaviour
 		if (OnLandEvent == null)
 			OnLandEvent = new UnityEvent();
 
-		if (OnCrouchEvent == null)
-			OnCrouchEvent = new BoolEvent();
 	}
 
     private void Start()

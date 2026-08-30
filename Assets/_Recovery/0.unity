@@ -2060,8 +2060,6 @@ MonoBehaviour:
   m_WhatIsGround:
     serializedVersion: 2
     m_Bits: 512
-  doneBlocking: 0
-  doneNeutral: 0
 --- !u!95 &1955651000
 Animator:
   serializedVersion: 7
