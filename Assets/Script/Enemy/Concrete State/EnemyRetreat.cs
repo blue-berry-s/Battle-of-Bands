@@ -4,6 +4,7 @@ public class EnemyRetreat : EnemyState
 {
     Transform player;
     Transform enemyPos;
+    float goalDest;
     public EnemyRetreat(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
@@ -18,7 +19,8 @@ public class EnemyRetreat : EnemyState
     public override void EnterState()
     {
         base.EnterState();
-        enemy.moveEnemy(new Vector2(player.position.x + 7f, 0f));
+        goalDest = player.position.x + 7f;
+        enemy.moveEnemy(new Vector2(goalDest, 0f));
     }
 
     public override void ExitState()
@@ -33,12 +35,19 @@ public class EnemyRetreat : EnemyState
         {
             enemy.StateMachine.ChangeState(enemy.attackState);
         }
-        else if (enemyPos.position.x >= player.position.x + 7f || enemyPos.position.x >= 8.5f)
+        else if (enemyPos.position.x >= goalDest || enemyPos.position.x >= enemy.outOfBounds)
         {
             enemy.StateMachine.ChangeState(enemy.idleState);
         }
         else {
-            enemy.moveEnemy(new Vector2(player.position.x + 7f, 0f));
+            // 2. Calculate the direction vector (-1 for Left, 1 for Right)
+            //float directionX = player.position.x + 7f > enemy.transform.position.x ? 1f : -1f;
+
+            // 3. Pass the true DIRECTION vector to the movement function
+            //enemy.moveEnemy(new Vector2(goalDest, 0));
+
+            //I kind of like the dash back right now
+            enemy.moveEnemy(new Vector2(goalDest, 0f));
         }
     }
 
