@@ -62,21 +62,21 @@ public class EnemyIdle : EnemyState
         // A: Transition to block state if roll succeeds or player bounds check forces it
         if (randFloat < 0.33f || (player.position.x + 7f) > enemy.outOfBounds)
         {
-            Debug.Log("Neutral Dance -> Block State");
+            //Debug.Log("Neutral Dance -> Block State");
             enemy.StateMachine.ChangeState(enemy.blockState);
         }
         // B: Reposition to an farther distance
         else if (randFloat >= 0.33f && randFloat < 0.66f)
         {
-            Debug.Log("Neutral Dance -> Move Back");
+            //Debug.Log("Neutral Dance -> Move Back");
             // Command the movement immediately
-            //TODO: instead of just moveEnemy - we should just create a new state (enemyRetreat)
+
             enemy.StateMachine.ChangeState(enemy.retreatState);
         }
         // C: Escape backwards
         else
         {
-            Debug.Log("Neutral Dance -> Jump Back");
+            //Debug.Log("Neutral Dance -> Jump Back");
             enemy.jumpBack();
             enemy.StateMachine.ChangeState(enemy.jumpState);
 

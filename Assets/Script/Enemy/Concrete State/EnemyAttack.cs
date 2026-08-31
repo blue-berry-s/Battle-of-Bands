@@ -27,18 +27,23 @@ public class EnemyAttack : EnemyState
     public override void FrameUpdate()
     {
         base.FrameUpdate();
-        if (!enemy.isWithinAttackingDistance) {
+        if (!enemy.isWithinAttackingDistance)
+        {
             if (enemy.enemyAnimator.GetBool("isJumping"))
             {
                 enemy.StateMachine.ChangeState(enemy.jumpState);
             }
-            else {
+            else
+            {
                 enemy.StateMachine.ChangeState(enemy.idleState);
             }
         }
-        else
+        else if (enemy.metronome.attackPeriod)
         {
             enemy.attackPlayer();
+        }
+        else {
+            enemyStateMachine.ChangeState(enemy.idleState);
         }
     }
 

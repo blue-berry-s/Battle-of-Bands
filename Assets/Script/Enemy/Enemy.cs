@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public Animator enemyAnimator;
     public Rigidbody2D enemyRigidBody;
+    public Metronome metronome;
 
     // State Machine
     public EnemyStateMachine StateMachine { get; set; }
@@ -25,6 +26,10 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public EnemyJump jumpState { get; set; }
 
+    public EnemyDead deadState {get; set;}
+
+    public EnemyDisabled disabledState { get; set; }
+
     public bool isWithinAttackingDistance { get; set; }
     public bool isWithinKickingDistance { get; set; }
 
@@ -33,6 +38,8 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public Enemydata data;
 
     public HealthBar HealthUI;
+
+    private bool _enabled = true;
 
     public float outOfBounds { get; private set; } = 8.5f;
 
@@ -52,6 +59,8 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         blockState = new EnemyBlock(this, StateMachine);
         retreatState = new EnemyRetreat(this, StateMachine);
         jumpState = new EnemyJump(this, StateMachine);
+        deadState = new EnemyDead(this, StateMachine);
+        disabledState = new EnemyDisabled(this, StateMachine);
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -61,30 +70,43 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         currentHealth = data.maxHealth;
         StateMachine.Initalize(idleState);
         HealthUI.setMaxHealth(Mathf.RoundToInt(currentHealth));
+        metronome = GameObject.FindGameObjectWithTag("Metronome").GetComponent<Metronome>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
-        if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
+        //Debug.Log("Current State: " + StateMachine.currentEnemyState);
+        if (_enabled)
         {
-            Vector2 distance = player.position - transform.position;
-            //Debug.Log("X: " + distance.x + " Y: " + distance.y);
-            if (Mathf.Abs(distance.x) <= 7 && Mathf.Abs(distance.y) <= 1)
+            
+            if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
             {
-                float rand = Random.Range(0f, 1f);
-                if (rand < data.blockingChance) {
-                    float randFloat = Random.Range(0, data.maxReactionDelay);
-                    StartCoroutine(delayBlock(randFloat));
+                Vector2 distance = player.position - transform.position;
+                //Debug.Log("X: " + distance.x + " Y: " + distance.y);
+                if (Mathf.Abs(distance.x) <= 7 && Mathf.Abs(distance.y) <= 1)
+                {
+                    float rand = Random.Range(0f, 1f);
+                    if (rand < data.blockingChance)
+                    {
+                        float randFloat = Random.Range(0, data.maxReactionDelay);
+                        StartCoroutine(delayBlock(randFloat));
+                    }
+                }
+
+            }
+            else if (isWithinAttackingDistance && StateMachine.currentEnemyState != attackState)
+            {
+                if (metronome.attackPeriod)
+                {
+                    StateMachine.ChangeState(attackState);
                 }
             }
 
         }
-        else if (isWithinAttackingDistance)
-            {
-                StateMachine.ChangeState(attackState);
-            }
+        else {
+            StateMachine.ChangeState(disabledState);
+        }
         StateMachine.currentEnemyState.FrameUpdate();
     }
 
@@ -142,6 +164,10 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     public void Die()
     {
         Debug.Log("I DIED!");
+        player.GetComponent<PlayerAttack>().enabled = false;
+        player.GetComponent<PlayerMovement>().enabled = false;
+        player.GetComponent<Animator>().SetFloat("moveSpeed", 0);
+        StateMachine.ChangeState(deadState);
     }
 
 
@@ -164,6 +190,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public void attackPlayer() {
         if (!enemyAnimator.GetBool("isAttacking")) {
+            enemyRigidBody.linearVelocityX = 0;
             float randFloat = Random.Range(data.minReactionDelay, data.maxReactionDelay);
             StartCoroutine(delayAttack(randFloat));
         }
@@ -192,7 +219,13 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     IEnumerator delayAttack(float time)
     {
         yield return new WaitForSeconds(time);
-        enemyAnimator.SetBool("isAttacking", true);
+        if (metronome.attackPeriod && !enemyAnimator.GetBool("isAttacking"))
+        {
+            //Debug.Log("ATTACKING NOW AND BEAT IS " + metronome.attackPeriod);
+            enemyRigidBody.linearVelocityX = 0;
+            enemyAnimator.SetBool("isAttacking", true);
+        }
+        
     }
 
     IEnumerator delayBlock(float time) {
@@ -226,10 +259,27 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     }
 
     public IEnumerator blockWait() {
+        enemyRigidBody.linearVelocityX = 0;
         float time = Random.Range(data.minReactionDelay, data.minReactionDelay);
         yield return new WaitForSeconds(time);
         doneBlocking = true;
     }
 
+    public void disableAllAnimator() {
+        enemyRigidBody.linearVelocityX = 0;
+        enemyAnimator.SetBool("isAttacking", false);
+        enemyAnimator.SetBool("isMoving", false);
+        enemyAnimator.SetBool("isHurt", false);
+        enemyAnimator.SetBool("isBlocking", false);
+        enemyAnimator.SetBool("isJumping", false);
+    }
+
+    public void disableEnemy() {
+        _enabled = false;
+    }
+
+    public void switchToWin() {
+        FindAnyObjectByType<GameManager>().switchToWin();
+    }
 
 }

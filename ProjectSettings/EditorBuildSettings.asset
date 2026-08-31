@@ -6,8 +6,17 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/Scenes/MenuScene.unity
+    guid: 5dc2243ef9b458b4184590b739ddbaad
+  - enabled: 1
     path: Assets/Scenes/FightScene.unity
     guid: 8c9cfa26abfee488c85f1582747f6a02
+  - enabled: 1
+    path: Assets/Scenes/WinScene.unity
+    guid: 162eb92a602693b4ca0a347af2747a04
+  - enabled: 1
+    path: Assets/Scenes/LoseScene.unity
+    guid: abc68eddeb3256b41b38099bca927962
   m_configObjects:
     com.unity.input.settings: {fileID: 11400000, guid: dbc4e23baa68e4946acfa074ac14e9eb, type: 2}
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}

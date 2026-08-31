@@ -31,11 +31,7 @@ public class EnemyRetreat : EnemyState
     public override void FrameUpdate()
     {
         base.FrameUpdate();
-        if (enemy.isWithinAttackingDistance)
-        {
-            enemy.StateMachine.ChangeState(enemy.attackState);
-        }
-        else if (enemyPos.position.x >= goalDest || enemyPos.position.x >= enemy.outOfBounds)
+        if ((enemyPos.position.x - goalDest) <= 1 || enemyPos.position.x >= enemy.outOfBounds)
         {
             enemy.StateMachine.ChangeState(enemy.idleState);
         }
