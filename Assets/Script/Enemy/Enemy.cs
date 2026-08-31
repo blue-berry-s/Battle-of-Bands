@@ -32,13 +32,16 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public Enemydata data;
 
+    public HealthBar HealthUI;
+
+    public float outOfBounds { get; private set; } = 8.5f;
+
     private bool m_Grounded;
     [SerializeField] private Transform m_GroundCheck;
     [SerializeField] private LayerMask m_WhatIsGround;
     const float k_GroundedRadius = .17f; // Radius of the overlap circle to determine if grounded
 
     public bool doneBlocking = false;
-    public bool doneNeutral = false;
 
     private void Awake()
     {
@@ -57,6 +60,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
         currentHealth = data.maxHealth;
         StateMachine.Initalize(idleState);
+        HealthUI.setMaxHealth(Mathf.RoundToInt(currentHealth));
     }
 
     // Update is called once per frame
@@ -122,12 +126,15 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
                 enemyRigidBody.AddForce(new Vector2(400, 200));
                 currentHealth -= damageAmount;
                 enemyAnimator.SetBool("isHurt", true);
+                
             }
             else
             {
                 currentHealth = 0;
                 Die();
             }
+
+            HealthUI.setHealth(Mathf.RoundToInt(currentHealth));
         }
         //Debug.Log(currentHealth);
     }
