@@ -7,43 +7,70 @@ public class PlayerAttack : MonoBehaviour
     public Animator animator;
     public PlayerController controller;
     public GameObject[] attackHitBox;
-
+    private Metronome metronome;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
-        
+        metronome = GameObject.FindGameObjectWithTag("Metronome").GetComponent<Metronome>();
     }
 
     // Update is called once per frame
     void Update()
     {
 
-
-        if (Input.GetButtonDown("Attack") && canAttack && !animator.GetBool("isHurt"))
+        
+        if (Input.GetButtonDown("Attack"))
         {
-            canAttack = false;
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isAttacking", true);
+            if (metronome.attackPeriod) {
+                if (canAttack && !animator.GetBool("isHurt")) {
+                    canAttack = false;
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isAttacking", true);
+                }
+            }
+            else {
+                penalizePlayer();
+            }
+            
         }
         else if (Input.GetButtonDown("Kick") && canAttack && !animator.GetBool("isHurt"))
         {
-            canAttack = false;
-            animator.SetBool("isJumping", false);
-            animator.SetBool("isKicking", true);
+            if (metronome.attackPeriod)
+            {
+                if (canAttack && !animator.GetBool("isHurt"))
+                {
+                    canAttack = false;
+                    animator.SetBool("isJumping", false);
+                    animator.SetBool("isKicking", true);
+                }
+            }
+            else
+            {
+                penalizePlayer();
+            }
         }
-        else if (Input.GetButtonDown("Block") && !animator.GetBool("isHurt")) {
+        // you can't cancle an attack animation to block
+        else if (Input.GetButtonDown("Block") && !animator.GetBool("isHurt") && !animator.GetBool("isAttacking") && !animator.GetBool("isKicking")) {
             if (!isblocking) {
                 isblocking = true;
                 canAttack = false;
+                animator.SetBool("isAtacking", false);
+                animator.SetBool("isKicking", false);
                 animator.SetBool("isBlocking", true);
+
+                //Debug.Log("isAttacking: " + animator.GetBool("isAttackign"));
             }
         }
 
         if (Input.GetButtonUp("Block")) {
             isblocking = false;
             canAttack = true;
+            stopAttacking();
+            stopKicking();
             animator.SetBool("isBlocking", false);
+
+            //Debug.Log("isAttacking: " + animator.GetBool("isAttackign"));
 
         }
     }
@@ -80,5 +107,10 @@ public class PlayerAttack : MonoBehaviour
 
     public void blocking() { 
         
+    }
+
+    private void penalizePlayer() {
+        gameObject.GetComponent<playerHealth>().Damage(metronome.penaltyDamage);
+        Debug.Log("OFF BEAT");
     }
 }

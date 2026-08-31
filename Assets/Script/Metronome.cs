@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 public class Metronome : MonoBehaviour
 {
@@ -10,11 +11,17 @@ public class Metronome : MonoBehaviour
     [SerializeField] private Color full;
     [SerializeField] private Image[] beatImages;
 
-    [SerializeField] private float pluseSize = 1.15f;
-    [SerializeField] private float returnSpeed = 5f;
+    [SerializeField] private float BeatpluseSize = 1.15f;
+    [SerializeField] private float returnSpeed = 10f;
+    //80ms of linencey
+    private float linentTime = 0.3f;
 
     private RectTransform rectTransform;
     private Vector3 startSize;
+
+    public bool attackPeriod { get; set; } = false;
+    public int penaltyDamage { get; private set; } = 1;
+    
 
     private void Start()
     {
@@ -28,6 +35,7 @@ public class Metronome : MonoBehaviour
     private void Update()
     {
         rectTransform.localScale = Vector3.Lerp(rectTransform.localScale, startSize, Time.deltaTime * returnSpeed);
+        
     }
 
     public void beat() {
@@ -43,20 +51,12 @@ public class Metronome : MonoBehaviour
         else {
             currentbeat++;
         }
+
+        StartCoroutine(closeAttackperiod());
     }
 
     public void pulse() {
-        if (rectTransform != null)
-        {
-            // Instantly snap to the expanded pulse scale
-            rectTransform.localScale = startSize * pluseSize;
-        }
-    }
-
-    private void clearAllBeats() {
-        foreach (Image i in beatImages) {
-            i.color = empty;
-        }
+        rectTransform.localScale = startSize * BeatpluseSize;
     }
 
     private void clearPrevBeat()
@@ -68,5 +68,11 @@ public class Metronome : MonoBehaviour
         {
             beatImages[currentbeat - 1].color = empty;
         }
+    }
+
+    IEnumerator closeAttackperiod() {
+        yield return new WaitForSeconds(linentTime);
+        attackPeriod = false;
+        //Debug.Log("CLOSED");
     }
 }

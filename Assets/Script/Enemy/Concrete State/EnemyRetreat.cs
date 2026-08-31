@@ -35,7 +35,7 @@ public class EnemyRetreat : EnemyState
         {
             enemy.StateMachine.ChangeState(enemy.attackState);
         }
-        else if (enemyPos.position.x >= goalDest || enemyPos.position.x >= enemy.outOfBounds)
+        else if ((enemyPos.position.x - goalDest) <= 1 || enemyPos.position.x >= enemy.outOfBounds)
         {
             enemy.StateMachine.ChangeState(enemy.idleState);
         }
