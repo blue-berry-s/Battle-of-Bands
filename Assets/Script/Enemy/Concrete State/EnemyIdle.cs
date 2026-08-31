@@ -5,8 +5,6 @@ public class EnemyIdle : EnemyState
     Transform player;
     float randDist;
     float currentTargetX;
-    bool atPos = false;
-    bool isMoving = false;
     public EnemyIdle(Enemy enemy, EnemyStateMachine enemyStateMachine) : base(enemy, enemyStateMachine)
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
@@ -23,37 +21,32 @@ public class EnemyIdle : EnemyState
         //chose a random point within player range
         randDist = Random.Range(3, 6);
         currentTargetX = player.position.x + randDist;
-        atPos = false;
-        isMoving = false;
     }
 
     public override void ExitState()
     {
         base.ExitState();
-        atPos = false;
-        isMoving = false;
     }
 
     public override void FrameUpdate()
     {
         base.FrameUpdate();
-
-        if (!atPos)
+        if (currentTargetX >= enemy.outOfBounds)
         {
-            // 1. Check if we arrived at the target position
-            if (Mathf.Abs(enemy.transform.position.x - currentTargetX) < 0.2f)
-            {
-                atPos = true;
-                MakeDanceDecision();
-            }
-            else
-            {
-                // 2. Calculate the direction vector (-1 for Left, 1 for Right)
-                float directionX = currentTargetX > enemy.transform.position.x ? 1f : -1f;
+            enemy.StateMachine.ChangeState(enemy.idleState);
+        }
+        // 1. Check if we arrived at the target position
+        else if (Mathf.Abs(enemy.transform.position.x - currentTargetX) < 0.2f)
+        {
+            MakeDanceDecision();
+        }
+        else
+        {
+            // 2. Calculate the direction vector (-1 for Left, 1 for Right)
+            float directionX = currentTargetX > enemy.transform.position.x ? 1f : -1f;
 
-                // 3. Pass the true DIRECTION vector to the movement function
-                enemy.moveEnemy(new Vector2(directionX, 0));
-            }
+            // 3. Pass the true DIRECTION vector to the movement function
+            enemy.moveEnemy(new Vector2(directionX, 0));
         }
     }
 
@@ -67,7 +60,7 @@ public class EnemyIdle : EnemyState
         float randFloat = Random.Range(0f, 1f);
 
         // A: Transition to block state if roll succeeds or player bounds check forces it
-        if (randFloat < 0.33f || (player.position.x + 7f) > 8f)
+        if (randFloat < 0.33f || (player.position.x + 7f) > enemy.outOfBounds)
         {
             Debug.Log("Neutral Dance -> Block State");
             enemy.StateMachine.ChangeState(enemy.blockState);

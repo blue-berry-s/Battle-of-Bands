@@ -8,6 +8,8 @@ public class playerHealth : MonoBehaviour, IHealth
     public float maxHealth { get; set; } = 10;
     public float currentHealth { get; set ; }
 
+    public HealthBar healthUI;
+
     public void Damage(float damageAmount)
     {
         if (canBeDamaged && !animator.GetBool("isBlocking"))
@@ -23,6 +25,7 @@ public class playerHealth : MonoBehaviour, IHealth
                     gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-200, 1500));
                 }
                 currentHealth -= damageAmount;
+                
                 animator.SetBool("isHurt", true);
             }
             else
@@ -30,6 +33,8 @@ public class playerHealth : MonoBehaviour, IHealth
                 currentHealth = 0;
                 Die();
             }
+
+            healthUI.setHealth(Mathf.RoundToInt(currentHealth));
         }
     }
 
@@ -42,6 +47,7 @@ public class playerHealth : MonoBehaviour, IHealth
     void Start()
     {
         currentHealth = maxHealth;
+        healthUI.setMaxHealth(Mathf.RoundToInt(currentHealth));
     }
 
     // Update is called once per frame
