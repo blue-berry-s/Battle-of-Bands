@@ -7,14 +7,14 @@ public class Metronome : MonoBehaviour
 
     private int currentbeat = 0;
     private int maxBeats;
-    [SerializeField] private Color empty;
+    [SerializeField] public Color empty;
     [SerializeField] private Color full;
     [SerializeField] private Image[] beatImages;
 
     [SerializeField] private float BeatpluseSize = 1.15f;
     [SerializeField] private float returnSpeed = 10f;
     //80ms of linencey
-    private float linentTime = 0.3f;
+    private float linentTime = 0.15f;
 
     private RectTransform rectTransform;
     private Vector3 startSize;

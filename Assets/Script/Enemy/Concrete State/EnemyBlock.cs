@@ -18,6 +18,7 @@ public class EnemyBlock : EnemyState
     {
         base.EnterState();
         enemy.enemyAnimator.SetBool("isBlocking", true);
+        enemy.stopAttacking();
         enemy.enemyAnimator.SetBool("isMoving", false);
         enemy.doneBlocking = false;
         enemy.performBlockWait();

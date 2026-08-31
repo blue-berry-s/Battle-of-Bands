@@ -12,6 +12,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public Animator enemyAnimator;
     public Rigidbody2D enemyRigidBody;
+    public Metronome metronome;
 
     // State Machine
     public EnemyStateMachine StateMachine { get; set; }
@@ -61,12 +62,14 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
         currentHealth = data.maxHealth;
         StateMachine.Initalize(idleState);
         HealthUI.setMaxHealth(Mathf.RoundToInt(currentHealth));
+        metronome = GameObject.FindGameObjectWithTag("Metronome").GetComponent<Metronome>();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        
+        //Debug.Log("Current State: " + StateMachine.currentEnemyState);
         if (Input.GetButtonDown("Attack") || Input.GetButtonDown("Kick"))
         {
             Vector2 distance = player.position - transform.position;
@@ -81,10 +84,13 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
             }
 
         }
-        else if (isWithinAttackingDistance)
+        else if (isWithinAttackingDistance && StateMachine.currentEnemyState != attackState)
+        {
+            if (metronome.attackPeriod)
             {
                 StateMachine.ChangeState(attackState);
             }
+        }
         StateMachine.currentEnemyState.FrameUpdate();
     }
 
@@ -164,6 +170,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
 
     public void attackPlayer() {
         if (!enemyAnimator.GetBool("isAttacking")) {
+            enemyRigidBody.linearVelocityX = 0;
             float randFloat = Random.Range(data.minReactionDelay, data.maxReactionDelay);
             StartCoroutine(delayAttack(randFloat));
         }
@@ -192,7 +199,16 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     IEnumerator delayAttack(float time)
     {
         yield return new WaitForSeconds(time);
-        enemyAnimator.SetBool("isAttacking", true);
+        if (metronome.attackPeriod && !enemyAnimator.GetBool("isAttacking")) {
+            //Debug.Log("ATTACKING NOW AND BEAT IS " + metronome.attackPeriod);
+            enemyRigidBody.linearVelocityX = 0;
+            enemyAnimator.SetBool("isAttacking", true);
+        }
+        else {
+            StateMachine.ChangeState(retreatState);
+        }
+       
+        
     }
 
     IEnumerator delayBlock(float time) {
@@ -226,6 +242,7 @@ public class Enemy : MonoBehaviour, IHealth, ITriggerCheckable
     }
 
     public IEnumerator blockWait() {
+        enemyRigidBody.linearVelocityX = 0;
         float time = Random.Range(data.minReactionDelay, data.minReactionDelay);
         yield return new WaitForSeconds(time);
         doneBlocking = true;

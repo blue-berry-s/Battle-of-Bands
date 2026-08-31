@@ -10,7 +10,9 @@ public class EnemyState
         this.enemyStateMachine = enemyStateMachine;
     }
 
-    public virtual void EnterState() { }
+    public virtual void EnterState() {
+        Debug.Log(enemy.StateMachine.currentEnemyState);
+    }
     public virtual void ExitState() { }
 
     public virtual void FrameUpdate() { }

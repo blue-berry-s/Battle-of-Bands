@@ -5,7 +5,7 @@ public class beatManager : MonoBehaviour
 
     [SerializeField] private float _bpm;
     [SerializeField] private AudioSource _audioSource;
-    [SerializeField] private Intervals[] _intervals;
+    [SerializeField] public Intervals[] _intervals;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -29,7 +29,9 @@ public class Intervals {
     [SerializeField] private float _steps;
     [SerializeField] private UnityEvent _trigger;
     [SerializeField] private Metronome _metronome;
-    private int lastInterval;
+    public int lastInterval;
+    public int currentInterval;
+    public float _interval;
 
     // Leanth of current beat
     public float GetIntervalLength(float bpm) {
@@ -37,17 +39,20 @@ public class Intervals {
     }
     // if we're at a new beat or not
     public void CheckForNewInterval(float interval) {
+        _interval = interval;
         //Debug.Log(interval);
-        int currentInterval = Mathf.FloorToInt(interval);
-        if (interval%1 >= 0.9 && interval% 1 < 0.94 && currentInterval == lastInterval) {
-            _metronome.attackPeriod = true;
-        }
-        else if (currentInterval < lastInterval)
+        currentInterval = Mathf.FloorToInt(interval);
+
+        if (currentInterval < lastInterval)
         {
             lastInterval = currentInterval;
             return;
         }
 
+        else if (interval % 1 >= 0.85 && interval % 1 <= 0.9999999f && currentInterval == lastInterval)
+        {
+            _metronome.attackPeriod = true;
+        }       
         if (currentInterval != lastInterval)
         {
             lastInterval = currentInterval;

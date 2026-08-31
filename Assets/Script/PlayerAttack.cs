@@ -8,11 +8,13 @@ public class PlayerAttack : MonoBehaviour
     public PlayerController controller;
     public GameObject[] attackHitBox;
     private Metronome metronome;
+    private beatManager beatManager;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         metronome = GameObject.FindGameObjectWithTag("Metronome").GetComponent<Metronome>();
+        beatManager = FindAnyObjectByType<beatManager>();
     }
 
     // Update is called once per frame
@@ -111,6 +113,20 @@ public class PlayerAttack : MonoBehaviour
 
     private void penalizePlayer() {
         gameObject.GetComponent<playerHealth>().Damage(metronome.penaltyDamage);
-        Debug.Log("OFF BEAT");
+        Intervals interval = beatManager._intervals[0];
+        //Debug.Log("_interval: " + interval._interval);
+        //Debug.Log("currentInterval: " + interval.currentInterval);
+        //Debug.Log("currentInterval: " + interval.lastInterval);
+
+        if (interval._interval%1 >= 0.5f && interval._interval % 1 <= 0.999f)
+        {
+            Debug.Log("TOO EARLY");
+        }
+        else if (interval._interval % 1 >= 0.1f && interval._interval % 1 < 0.5)
+        {
+            Debug.Log("TOO LATE");
+        }
+
+
     }
 }

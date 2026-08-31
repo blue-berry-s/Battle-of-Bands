@@ -1294,7 +1294,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f2b390e34ef96f141a2d7c360d75f122, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Metronome
-  empty: {r: 0, g: 0, b: 0, a: 1}
+  empty: {r: 0.60488605, g: 0.6389285, b: 0.6509434, a: 0.74509805}
   full: {r: 0.18396229, g: 0.591242, b: 1, a: 1}
   beatImages:
   - {fileID: 2039529785}
@@ -1303,7 +1303,6 @@ MonoBehaviour:
   - {fileID: 1478534727}
   BeatpluseSize: 1.15
   returnSpeed: 5
-  linentTime: 0.08
 --- !u!114 &610222802
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1446,6 +1445,7 @@ GameObject:
   - component: {fileID: 625224573}
   - component: {fileID: 625224575}
   - component: {fileID: 625224574}
+  - component: {fileID: 625224576}
   m_Layer: 0
   m_Name: beat2
   m_TagString: Untagged
@@ -1510,6 +1510,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 625224572}
   m_CullTransparentMesh: 1
+--- !u!114 &625224576
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 625224572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdd440f9204c964cba55b8e986292e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Beat
 --- !u!1 &651941232
 GameObject:
   m_ObjectHideFlags: 0
@@ -1880,6 +1892,7 @@ GameObject:
   - component: {fileID: 1026606970}
   - component: {fileID: 1026606972}
   - component: {fileID: 1026606971}
+  - component: {fileID: 1026606973}
   m_Layer: 0
   m_Name: beat3
   m_TagString: Untagged
@@ -1944,6 +1957,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1026606969}
   m_CullTransparentMesh: 1
+--- !u!114 &1026606973
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1026606969}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdd440f9204c964cba55b8e986292e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Beat
 --- !u!1 &1106996628
 GameObject:
   m_ObjectHideFlags: 0
@@ -2272,6 +2297,7 @@ GameObject:
   - component: {fileID: 1478534726}
   - component: {fileID: 1478534728}
   - component: {fileID: 1478534727}
+  - component: {fileID: 1478534729}
   m_Layer: 0
   m_Name: beat4
   m_TagString: Untagged
@@ -2336,6 +2362,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1478534725}
   m_CullTransparentMesh: 1
+--- !u!114 &1478534729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1478534725}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdd440f9204c964cba55b8e986292e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Beat
 --- !u!1 &1479214288
 GameObject:
   m_ObjectHideFlags: 0
@@ -3090,6 +3128,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enemy
   enemyAnimator: {fileID: 1955651000}
   enemyRigidBody: {fileID: 1955650995}
+  metronome: {fileID: 0}
   attackHitBox:
   - {fileID: 1241365091}
   data: {fileID: 11400000, guid: b5a9f25f819efff4cb2b5d590915edb5, type: 2}
@@ -3359,6 +3398,7 @@ GameObject:
   - component: {fileID: 2039529784}
   - component: {fileID: 2039529786}
   - component: {fileID: 2039529785}
+  - component: {fileID: 2039529787}
   m_Layer: 0
   m_Name: beat1
   m_TagString: Untagged
@@ -3423,6 +3463,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2039529783}
   m_CullTransparentMesh: 1
+--- !u!114 &2039529787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2039529783}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fdd440f9204c964cba55b8e986292e1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Beat
 --- !u!1 &2071436886
 GameObject:
   m_ObjectHideFlags: 0
@@ -3694,6 +3746,9 @@ MonoBehaviour:
             m_BoolArgument: 0
           m_CallState: 2
     _metronome: {fileID: 610222801}
+    lastInterval: 0
+    currentInterval: 0
+    _interval: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
