@@ -36,7 +36,7 @@ public class PlayerAttack : MonoBehaviour
             }
             
         }
-        else if (Input.GetButtonDown("Kick") && canAttack && !animator.GetBool("isHurt"))
+        else if (Input.GetButtonDown("Kick"))
         {
             if (metronome.attackPeriod)
             {

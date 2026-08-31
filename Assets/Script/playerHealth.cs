@@ -41,6 +41,12 @@ public class playerHealth : MonoBehaviour, IHealth
     public void Die()
     {
         Debug.Log("PLAYER DIED");
+        animator.SetBool("isDead", true);
+        gameObject.GetComponent<PlayerAttack>().enabled = false;
+        gameObject.GetComponent<PlayerMovement>().enabled = false;
+        FindAnyObjectByType<Enemy>().disableEnemy();
+
+
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -66,5 +72,9 @@ public class playerHealth : MonoBehaviour, IHealth
         canBeDamaged = true;
         gameObject.GetComponent<PlayerController>().airOpen();
 
+    }
+
+    public void switchToLoseScene() {
+        FindAnyObjectByType<GameManager>().switchToLose();
     }
 }

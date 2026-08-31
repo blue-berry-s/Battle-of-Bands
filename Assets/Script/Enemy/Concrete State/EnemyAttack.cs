@@ -43,7 +43,7 @@ public class EnemyAttack : EnemyState
             enemy.attackPlayer();
         }
         else {
-            enemyStateMachine.ChangeState(enemy.retreatState);
+            enemyStateMachine.ChangeState(enemy.idleState);
         }
     }
 

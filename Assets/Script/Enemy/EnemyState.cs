@@ -11,7 +11,7 @@ public class EnemyState
     }
 
     public virtual void EnterState() {
-        Debug.Log(enemy.StateMachine.currentEnemyState);
+        //Debug.Log(enemy.StateMachine.currentEnemyState);
     }
     public virtual void ExitState() { }
 
