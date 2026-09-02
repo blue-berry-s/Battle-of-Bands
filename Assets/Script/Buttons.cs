@@ -63,8 +63,8 @@ public class Buttons : MonoBehaviour
 
     public void SimulateNoMovementKeyUp()
     {
-        InputSystem.QueueStateChange(Keyboard.leftArrowKey, 0.0f);
-        InputSystem.QueueStateChange(Keyboard.rightArrowKey, 0.0f);
+        InputSystem.QueueStateChange(Keyboard.current.leftArrowKey, 0.0f);
+        InputSystem.QueueStateChange(Keyboard.current.rightArrowKey, 0.0f);
     } 
 
 }
