@@ -9,7 +9,7 @@ using UnityEngine.InputSystem.LowLevel;
 public class Buttons : MonoBehaviour
 {
     // change your serial port
-    SerialPort sp = new SerialPort("/dev/cu.usbmodem1101", 9600);
+    SerialPort sp = new SerialPort("/dev/cu.usbmodem11101", 9600);
 
     // Start is called before the first frame update
     void Start()
@@ -24,16 +24,18 @@ public class Buttons : MonoBehaviour
         if (sp.IsOpen){
             try{
                 int x = sp.ReadByte(); //Read from the arduino 
+                print(x);
 
                 // When left button is pushed
                 if(x==1){
                     SimulateKeyPress(Key.LeftArrow);
-                    print(sp.ReadByte());
+                    print(x);
+               
                     // transform.Translate(Vector3.left * Time.deltaTime * 5);
                 }
                 // When right button is pushed
                 if(x==2){
-                    print(sp.ReadByte());
+                    print(x);
                     SimulateKeyPress(Key.RightArrow);
                     // transform.Translate(Vector3.right * Time.deltaTime * 5);
                 }
@@ -63,8 +65,7 @@ public class Buttons : MonoBehaviour
 
     public void SimulateNoMovementKeyUp()
     {
-        InputSystem.QueueStateChange(Keyboard.current.leftArrowKey, 0.0f);
-        InputSystem.QueueStateChange(Keyboard.current.rightArrowKey, 0.0f);
+       InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState());
     } 
 
 }
