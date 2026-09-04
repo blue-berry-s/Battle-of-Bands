@@ -17,12 +17,12 @@ public class playerHealth : MonoBehaviour, IHealth
             canBeDamaged = false;
             if (currentHealth - damageAmount > 0)
             {
-                if (animator.GetBool("isJumping")) {
+                if (animator.GetBool("isJumping") || !gameObject.GetComponent<PlayerController>().m_Grounded) {
                     gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-300, -400));
                 }
                 else
                 {
-                    gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-200, 1500));
+                    gameObject.GetComponent<Rigidbody2D>().AddForce(new Vector2(-200, 800));
                 }
                 currentHealth -= damageAmount;
                 
