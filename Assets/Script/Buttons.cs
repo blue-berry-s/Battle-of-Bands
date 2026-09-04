@@ -24,21 +24,24 @@ public class Buttons : MonoBehaviour
         if (sp.IsOpen){
             try{
                 int x = sp.ReadByte(); //Read from the arduino 
-                print(x);
-
-                // When left button is pushed
+        
+                // When up strumbar is pushed
                 if(x==1){
+                    print("1");
                     SimulateKeyPress(Key.LeftArrow);
-                    print(x);
-               
-                    // transform.Translate(Vector3.left * Time.deltaTime * 5);
                 }
-                // When right button is pushed
+                // When down strumbar is pushed
                 if(x==2){
-                    print(x);
+                    print("2");
                     SimulateKeyPress(Key.RightArrow);
-                    // transform.Translate(Vector3.right * Time.deltaTime * 5);
                 }
+
+                //When Green Button is pushed 
+                if (x == 3 ){
+                    print("3");
+                    SimulateKeyPress(Key.Q);
+                }
+
 
                 if (x==11){
                     SimulateNoMovementKeyUp();
