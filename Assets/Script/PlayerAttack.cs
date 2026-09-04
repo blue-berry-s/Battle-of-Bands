@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerAttack : MonoBehaviour
 {
@@ -6,9 +7,13 @@ public class PlayerAttack : MonoBehaviour
     private bool isblocking = false;
     public Animator animator;
     public PlayerController controller;
+    [SerializeField] private InputActionReference attackAction;
+    [SerializeField] private InputActionReference kickAction;
+    [SerializeField] private InputActionReference blockAction;
     public GameObject[] attackHitBox;
     private Metronome metronome;
     private beatManager beatManager;
+    Keyboard keyboard;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -17,12 +22,26 @@ public class PlayerAttack : MonoBehaviour
         beatManager = FindAnyObjectByType<beatManager>();
     }
 
+    private void OnEnable()
+    {
+        if (attackAction != null) attackAction.action.Enable();
+        if (kickAction != null) kickAction.action.Enable();
+        if (blockAction != null) blockAction.action.Enable();
+    }
+
+    private void OnDisable()
+    {
+        if (attackAction != null) attackAction.action.Disable();
+        if (kickAction != null) kickAction.action.Disable();
+        if (blockAction != null) blockAction.action.Disable();
+    }
+
     // Update is called once per frame
     void Update()
     {
 
         
-        if (Input.GetButtonDown("Attack"))
+        if (attackAction.action.WasPressedThisFrame())
         {
             if (metronome.attackPeriod) {
                 if (canAttack && !animator.GetBool("isHurt")) {
@@ -36,7 +55,7 @@ public class PlayerAttack : MonoBehaviour
             }
             
         }
-        else if (Input.GetButtonDown("Kick"))
+        else if (kickAction.action.WasPressedThisFrame())
         {
             if (metronome.attackPeriod)
             {
@@ -53,7 +72,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
         // you can't cancle an attack animation to block
-        else if (Input.GetButtonDown("Block") && !animator.GetBool("isHurt") && !animator.GetBool("isAttacking") && !animator.GetBool("isKicking")) {
+        else if (blockAction.action.WasPressedThisFrame() && !animator.GetBool("isHurt") && !animator.GetBool("isAttacking") && !animator.GetBool("isKicking")) {
             if (!isblocking) {
                 isblocking = true;
                 canAttack = false;
@@ -65,7 +84,7 @@ public class PlayerAttack : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonUp("Block")) {
+        if (blockAction.action.WasReleasedThisFrame() && isblocking) {
             isblocking = false;
             canAttack = true;
             stopAttacking();

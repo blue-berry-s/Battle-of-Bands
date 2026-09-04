@@ -41,8 +41,25 @@ public class Buttons : MonoBehaviour
                     print("3");
                     SimulateKeyPress(Key.Q);
                 }
+                //When Red Button is pushed 
+                if (x == 4 ){
+                    print("4");
+                    SimulateKeyPress(Key.W);
+                }
 
+                //When Yellow Button is pushed 
+                if (x == 5 ){
+                    print("5");
+                    SimulateKeyPress(Key.LeftShift);
+                }
 
+                //When Blue Button is pushed 
+                  if (x == 6 ){
+                    print("6");
+                    SimulateKeyPress(Key.Space);
+                }
+
+                //When nothing is pressed 
                 if (x==11){
                     SimulateNoMovementKeyUp();
                 }
