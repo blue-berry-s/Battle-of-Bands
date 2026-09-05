@@ -18,6 +18,8 @@ public class EnemyMove : EnemyState
     public override void EnterState()
     {
         base.EnterState();
+        enemy.stopAttacking();
+
     }
 
     public override void ExitState()

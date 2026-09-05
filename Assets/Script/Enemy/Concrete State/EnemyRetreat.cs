@@ -21,6 +21,7 @@ public class EnemyRetreat : EnemyState
         base.EnterState();
         goalDest = player.position.x + 7f;
         enemy.moveEnemy(new Vector2(goalDest, 0f));
+        enemy.stopAttacking();
     }
 
     public override void ExitState()

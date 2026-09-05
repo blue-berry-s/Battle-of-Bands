@@ -24,7 +24,8 @@ public class EnemyAttack : EnemyState
     public override void ExitState()
     {
         base.ExitState();
-        
+        enemy.stopAttacking();
+
     }
 
     public override void FrameUpdate()

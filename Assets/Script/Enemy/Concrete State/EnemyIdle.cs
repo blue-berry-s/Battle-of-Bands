@@ -21,6 +21,7 @@ public class EnemyIdle : EnemyState
         //chose a random point within player range
         randDist = Random.Range(3, 6);
         currentTargetX = player.position.x + randDist;
+        enemy.stopAttacking();
     }
 
     public override void ExitState()
