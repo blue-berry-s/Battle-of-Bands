@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 38a90d9c07d3f374896edfe1e289ccf6, type: 3}
   m_Name: Enemy0
   m_EditorClassIdentifier: Assembly-CSharp::Enemydata
-  <minReactionDelay>k__BackingField: 0.35
-  <maxReactionDelay>k__BackingField: 0.5
+  <minReactionDelay>k__BackingField: 0.4
+  <maxReactionDelay>k__BackingField: 0.6
   <blockingChance>k__BackingField: 0.5
   <movementSpeed>k__BackingField: 2
   <maxHealth>k__BackingField: 10
+  <jumpForce>k__BackingField: 0

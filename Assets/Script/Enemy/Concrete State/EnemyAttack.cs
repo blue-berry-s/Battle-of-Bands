@@ -15,13 +15,16 @@ public class EnemyAttack : EnemyState
     public override void EnterState()
     {
         base.EnterState();
-        enemy.attackPlayer();
+        if(!enemy.enemyAnimator.GetBool("isAttacking")){
+            enemy.attackPlayer();
+        }
         //Debug.Log("I'M ATTACKING NOW");
     }
 
     public override void ExitState()
     {
         base.ExitState();
+        
     }
 
     public override void FrameUpdate()
@@ -38,11 +41,11 @@ public class EnemyAttack : EnemyState
                 enemy.StateMachine.ChangeState(enemy.idleState);
             }
         }
-        else if (enemy.metronome.attackPeriod)
+        else if (enemy.metronome.attackPeriod && !enemy.enemyAnimator.GetBool("isAttacking"))
         {
             enemy.attackPlayer();
         }
-        else {
+        else if (!enemy.enemyAnimator.GetBool("isAttacking")){
             enemyStateMachine.ChangeState(enemy.idleState);
         }
     }

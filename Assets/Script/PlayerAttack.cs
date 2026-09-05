@@ -76,7 +76,7 @@ public class PlayerAttack : MonoBehaviour
             if (!isblocking) {
                 isblocking = true;
                 canAttack = false;
-                animator.SetBool("isAtacking", false);
+                animator.SetBool("isAttacking", false);
                 animator.SetBool("isKicking", false);
                 animator.SetBool("isBlocking", true);
 

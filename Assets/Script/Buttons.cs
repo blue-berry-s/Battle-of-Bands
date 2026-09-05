@@ -31,7 +31,7 @@ public class Buttons : MonoBehaviour
                     SimulateKeyPress(Key.LeftArrow);
                 }
                 // When down strumbar is pushed
-                if(x==2){
+                if(x==2 && x != 13){
                     print("2");
                     SimulateKeyPress(Key.RightArrow);
                 }
@@ -54,15 +54,26 @@ public class Buttons : MonoBehaviour
                 }
 
                 //When Blue Button is pushed 
-                  if (x == 6 ){
+                if (x == 6 && x != 13){
                     print("6");
                     SimulateKeyPress(Key.Space);
+                }
+
+                if (x == 13 ){
+                    print("13");
+                    InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.RightArrow, Key.Space ));
+                }
+
+                if (x==14){
+                    print("14");
+                    InputSystem.QueueStateEvent(Keyboard.current, new KeyboardState(Key.LeftArrow, Key.Space ));
                 }
 
                 //When nothing is pressed 
                 if (x==11){
                     SimulateNoMovementKeyUp();
                 }
+                
             }
             catch (System.Exception){
 
